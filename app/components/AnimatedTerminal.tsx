@@ -58,3 +58,7 @@ export const AnimatedTerminal = ({ height = "h-full" }: { height?: string }) => 
   );
 };
 
+
+
+
+

@@ -146,3 +146,7 @@ export const GlobalDetailsView = () => (
     </div>
 );
 
+
+
+
+

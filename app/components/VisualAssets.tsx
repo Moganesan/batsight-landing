@@ -55,3 +55,7 @@ export const MapNode = ({ x, y, label, delay }: { x: number; y: number; label: s
     </div>
 );
 
+
+
+
+
