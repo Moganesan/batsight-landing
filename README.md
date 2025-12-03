@@ -2,6 +2,8 @@
 
 A Next.js application featuring a futuristic cybersecurity dashboard with real-time monitoring, threat detection visualization, and system management capabilities.
 
+Combination of k6, Datadog and more if I see some 
+
 ## Getting Started
 
 ### Prerequisites
