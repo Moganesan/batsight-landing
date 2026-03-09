@@ -53,10 +53,9 @@ function latLngToXYZ(lat: number, lng: number, radius: number): [number, number,
   ];
 }
 
-function DataArc({ start, end, color, speed }: {
+function DataArc({ start, end, speed }: {
   start: [number, number, number];
   end: [number, number, number];
-  color: string;
   speed: number;
 }) {
   const arcPoints = useMemo(() => generateArcPoints(start, end, 50, 0.4), [start, end]);
@@ -71,40 +70,38 @@ function DataArc({ start, end, color, speed }: {
   return (
     <Line
       points={arcPoints}
-      color={color}
-      lineWidth={1.5}
+      color="#ffffff"
+      lineWidth={1}
       dashed
       dashScale={5}
       dashSize={0.5}
       dashOffset={0}
       ref={dashRef}
       transparent
-      opacity={0.6}
+      opacity={0.15}
     />
   );
 }
 
 function GlobeMesh() {
   const globeRef = useRef<THREE.Group>(null);
-  const pointsRef = useRef<any>(null);
 
   const spherePoints = useMemo(() => generateSpherePoints(3000, 1.5), []);
 
   const connections = useMemo(() => {
-    const cities: { name: string; lat: number; lng: number }[] = [
-      { name: 'New York', lat: 40.7, lng: -74 },
-      { name: 'London', lat: 51.5, lng: -0.1 },
-      { name: 'Tokyo', lat: 35.7, lng: 139.7 },
-      { name: 'Singapore', lat: 1.3, lng: 103.8 },
-      { name: 'Dubai', lat: 25.2, lng: 55.3 },
-      { name: 'Sydney', lat: -33.9, lng: 151.2 },
-      { name: 'Sao Paulo', lat: -23.5, lng: -46.6 },
-      { name: 'Mumbai', lat: 19.1, lng: 72.9 },
+    const cities = [
+      { lat: 40.7, lng: -74 },
+      { lat: 51.5, lng: -0.1 },
+      { lat: 35.7, lng: 139.7 },
+      { lat: 1.3, lng: 103.8 },
+      { lat: 25.2, lng: 55.3 },
+      { lat: -33.9, lng: 151.2 },
+      { lat: -23.5, lng: -46.6 },
+      { lat: 19.1, lng: 72.9 },
     ];
 
-    const arcs: { start: [number, number, number]; end: [number, number, number]; color: string }[] = [];
+    const arcs: { start: [number, number, number]; end: [number, number, number] }[] = [];
     const r = 1.5;
-    const colors = ['#ff4d00', '#22d3ee', '#a78bfa', '#ff4d00', '#22d3ee'];
 
     for (let i = 0; i < cities.length; i++) {
       for (let j = i + 1; j < cities.length; j++) {
@@ -112,7 +109,6 @@ function GlobeMesh() {
           arcs.push({
             start: latLngToXYZ(cities[i].lat, cities[i].lng, r),
             end: latLngToXYZ(cities[j].lat, cities[j].lng, r),
-            color: colors[Math.floor(Math.random() * colors.length)],
           });
         }
       }
@@ -122,48 +118,42 @@ function GlobeMesh() {
 
   useFrame((_, delta) => {
     if (globeRef.current) {
-      globeRef.current.rotation.y += delta * 0.08;
+      globeRef.current.rotation.y += delta * 0.06;
     }
   });
 
   return (
     <group ref={globeRef}>
-      {/* Wireframe sphere */}
+      {/* Outer wireframe */}
       <mesh>
-        <sphereGeometry args={[1.48, 32, 32]} />
-        <meshBasicMaterial color="#334155" wireframe transparent opacity={0.15} />
+        <sphereGeometry args={[1.48, 36, 36]} />
+        <meshBasicMaterial color="#ffffff" wireframe transparent opacity={0.03} />
       </mesh>
 
-      {/* Latitude/longitude grid lines */}
+      {/* Inner wireframe grid */}
       <mesh>
-        <sphereGeometry args={[1.49, 16, 16]} />
-        <meshBasicMaterial color="#334155" wireframe transparent opacity={0.08} />
+        <sphereGeometry args={[1.49, 18, 18]} />
+        <meshBasicMaterial color="#ffffff" wireframe transparent opacity={0.015} />
       </mesh>
 
-      {/* Globe point cloud */}
-      <Points ref={pointsRef} positions={spherePoints} stride={3} frustumCulled={false}>
+      {/* Point cloud */}
+      <Points positions={spherePoints} stride={3} frustumCulled={false}>
         <PointMaterial
           transparent
-          color="#94a3b8"
-          size={0.008}
+          color="#ffffff"
+          size={0.006}
           sizeAttenuation
           depthWrite={false}
-          opacity={0.6}
+          opacity={0.25}
         />
       </Points>
 
       {/* Data arcs */}
       {connections.map((arc, i) => (
-        <DataArc
-          key={i}
-          start={arc.start}
-          end={arc.end}
-          color={arc.color}
-          speed={0.3 + Math.random() * 0.4}
-        />
+        <DataArc key={i} start={arc.start} end={arc.end} speed={0.3 + Math.random() * 0.3} />
       ))}
 
-      {/* City nodes */}
+      {/* City nodes - white dots */}
       {[
         { lat: 40.7, lng: -74 },
         { lat: 51.5, lng: -0.1 },
@@ -177,16 +167,16 @@ function GlobeMesh() {
         const pos = latLngToXYZ(city.lat, city.lng, 1.52);
         return (
           <mesh key={i} position={pos}>
-            <sphereGeometry args={[0.02, 8, 8]} />
-            <meshBasicMaterial color="#ff4d00" />
+            <sphereGeometry args={[0.015, 8, 8]} />
+            <meshBasicMaterial color="#ffffff" transparent opacity={0.6} />
           </mesh>
         );
       })}
 
-      {/* Inner glow sphere */}
+      {/* Dark inner fill */}
       <mesh>
-        <sphereGeometry args={[1.45, 32, 32]} />
-        <meshBasicMaterial color="#0a0e1a" transparent opacity={0.9} />
+        <sphereGeometry args={[1.44, 32, 32]} />
+        <meshBasicMaterial color="#050505" transparent opacity={0.95} />
       </mesh>
     </group>
   );
@@ -195,8 +185,8 @@ function GlobeMesh() {
 function FloatingParticles() {
   const ref = useRef<any>(null);
   const positions = useMemo(() => {
-    const pos = new Float32Array(200 * 3);
-    for (let i = 0; i < 200; i++) {
+    const pos = new Float32Array(150 * 3);
+    for (let i = 0; i < 150; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 8;
       pos[i * 3 + 1] = (Math.random() - 0.5) * 8;
       pos[i * 3 + 2] = (Math.random() - 0.5) * 8;
@@ -206,21 +196,14 @@ function FloatingParticles() {
 
   useFrame((_, delta) => {
     if (ref.current) {
-      ref.current.rotation.y += delta * 0.02;
-      ref.current.rotation.x += delta * 0.01;
+      ref.current.rotation.y += delta * 0.015;
+      ref.current.rotation.x += delta * 0.008;
     }
   });
 
   return (
     <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
-      <PointMaterial
-        transparent
-        color="#334155"
-        size={0.015}
-        sizeAttenuation
-        depthWrite={false}
-        opacity={0.4}
-      />
+      <PointMaterial transparent color="#ffffff" size={0.01} sizeAttenuation depthWrite={false} opacity={0.12} />
     </Points>
   );
 }
@@ -234,8 +217,7 @@ export default function Globe3D() {
         gl={{ antialias: true, alpha: true }}
         style={{ background: 'transparent' }}
       >
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={0.3} />
+        <ambientLight intensity={0.3} />
         <GlobeMesh />
         <FloatingParticles />
       </Canvas>

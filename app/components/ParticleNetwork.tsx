@@ -22,8 +22,8 @@ export default function ParticleNetwork({ className = '' }: { className?: string
     if (!ctx) return;
 
     let particles: Particle[] = [];
-    const connectionDistance = 120;
-    const particleCount = 80;
+    const connectionDistance = 100;
+    const particleCount = 60;
 
     function resize() {
       if (!canvas) return;
@@ -39,9 +39,9 @@ export default function ParticleNetwork({ className = '' }: { className?: string
         particles.push({
           x: Math.random() * canvas.offsetWidth,
           y: Math.random() * canvas.offsetHeight,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          size: Math.random() * 1.5 + 0.5,
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2,
+          size: Math.random() * 1.2 + 0.3,
         });
       }
     }
@@ -53,21 +53,18 @@ export default function ParticleNetwork({ className = '' }: { className?: string
 
       ctx.clearRect(0, 0, w, h);
 
-      // Update and draw particles
       for (const p of particles) {
         p.x += p.vx;
         p.y += p.vy;
-
         if (p.x < 0 || p.x > w) p.vx *= -1;
         if (p.y < 0 || p.y > h) p.vy *= -1;
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(148, 163, 184, 0.3)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
         ctx.fill();
       }
 
-      // Draw connections
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
@@ -75,11 +72,11 @@ export default function ParticleNetwork({ className = '' }: { className?: string
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < connectionDistance) {
-            const opacity = (1 - dist / connectionDistance) * 0.15;
+            const opacity = (1 - dist / connectionDistance) * 0.06;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(148, 163, 184, ${opacity})`;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -93,14 +90,12 @@ export default function ParticleNetwork({ className = '' }: { className?: string
     initParticles();
     animate();
 
-    window.addEventListener('resize', () => {
-      resize();
-      initParticles();
-    });
+    const onResize = () => { resize(); initParticles(); };
+    window.addEventListener('resize', onResize);
 
     return () => {
       cancelAnimationFrame(animationRef.current);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', onResize);
     };
   }, []);
 
