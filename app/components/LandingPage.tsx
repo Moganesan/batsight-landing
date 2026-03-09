@@ -752,7 +752,7 @@ export const LandingPage = ({
 
         <div className="max-w-[1400px] mx-auto border-t border-white/[0.04] py-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[10px] text-s9-text-faint font-mono uppercase tracking-[0.1em]">
-            © {new Date().getFullYear()} Sector 9. All rights reserved.
+            © {new Date().getFullYear()} Batsight. All rights reserved.
           </p>
           <div className="flex gap-6">
             {['Privacy Policy', 'Terms of Use', 'Security'].map((item) => (
@@ -839,8 +839,8 @@ export const LandingPage = ({
 
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { name: 'industry', label: 'Industry', options: ['Manufacturing','Financial Services','Healthcare','Energy & Utilities','Defense & Gov','Telecommunications','Logistics','Automotive','Insurance','Other'] },
-                    { name: 'companySize', label: 'Company Size', options: ['1–10','11–50','51–200','201–1000','1000+'] },
+                    { name: 'industry', label: 'Industry', options: ['Manufacturing', 'Financial Services', 'Healthcare', 'Energy & Utilities', 'Defense & Gov', 'Telecommunications', 'Logistics', 'Automotive', 'Insurance', 'Other'] },
+                    { name: 'companySize', label: 'Company Size', options: ['1–10', '11–50', '51–200', '201–1000', '1000+'] },
                   ].map((f) => (
                     <div key={f.name} className="flex flex-col gap-1.5">
                       <label className="text-[10px] uppercase tracking-[0.12em] text-s9-text-faint">{f.label} <span className="text-s9-white">*</span></label>

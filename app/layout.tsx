@@ -16,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sector 9 - Vision For Your Data",
+  title: "Batsight - Vision For Your Data",
   description:
     "Foundational software for data-driven decisions. Advanced data analytics and operational intelligence platform.",
 };
